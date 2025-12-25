@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="seikyusho_upload_form" name="Seikyusho Upload Form">
+        <t t-call="website.layout">
+            <div class="container my-5">
+                <h1 class="mb-4">Upload Seikyusho (PDF)</h1>
+
+                <t t-if="error">
+                    <div class="alert alert-danger" role="alert">
+                        <t t-esc="error"/>
+                    </div>
+                </t>
+
+                <form action="/seikyusho/upload" method="post" enctype="multipart/form-data" class="o_website_form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div class="mb-3">
+                        <label class="form-label">PDF</label>
+                        <input type="file" name="pdf" accept="application/pdf" class="form-control" required="required"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Upload date</label>
+                        <input type="date" name="upload_date" class="form-control" required="required"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Amount</label>
+                        <input type="number" name="amount" step="0.01" min="0" class="form-control" required="required"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="seikyusho_upload_success" name="Seikyusho Upload Success">
+        <t t-call="website.layout">
+            <div class="container my-5">
+                <h1 class="mb-3">Upload complete</h1>
+                <p class="mb-4">Thank you. Your upload has been received.</p>
+                <ul class="list-unstyled">
+                    <li><strong>Reference:</strong> <t t-esc="record.name"/></li>
+                    <li><strong>Date:</strong> <t t-esc="record.upload_date"/></li>
+                    <li><strong>Amount:</strong> <t t-esc="record.amount"/> <t t-esc="record.currency_id.name"/></li>
+                </ul>
+            </div>
+        </t>
+    </template>
+</odoo>
