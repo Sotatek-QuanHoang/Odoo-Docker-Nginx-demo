@@ -1,18 +1,28 @@
 services:
   web:
     image: odoo:17.0
-    depends_on:
-      - db
-    ports:
-      - "8069:8069"
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
     environment:
-      - PASSWORD_FILE=/run/secrets/postgresql_password
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USER: ${DB_USER:-odoo}
+      DB_NAME: ${DB_NAME:-odoo-demo}
+      DB_SSLMODE: ${DB_SSLMODE:-prefer}
     secrets:
       - postgresql_password
+    command: >
+      sh -lc '
+        exec odoo \
+          -d "$DB_NAME" \
+          --db_host="$DB_HOST" \
+          --db_port="$DB_PORT" \
+          --db_user="$DB_USER" \
+          --db_password="$(cat /run/secrets/postgresql_password)" \
+          --db_sslmode="$DB_SSLMODE"
+      '
 
   nginx:
     image: nginx:alpine
@@ -22,21 +32,8 @@ services:
       - "80:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-
-  db:
-    image: postgres:15
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD_FILE=/run/secrets/postgresql_password
-      - POSTGRES_USER=odoo
-      - PGDATA=/var/lib/postgresql/data/pgdata
-    volumes:
-      - odoo-db-data:/var/lib/postgresql/data/pgdata
-    secrets:
-      - postgresql_password
 volumes:
   odoo-web-data:
-  odoo-db-data:
 
 secrets:
   postgresql_password:
