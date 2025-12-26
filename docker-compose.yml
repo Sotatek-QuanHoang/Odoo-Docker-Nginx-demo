@@ -6,15 +6,20 @@ services:
       - ./config:/etc/odoo
       - ./addons:/mnt/extra-addons
     environment:
-      DB_HOST: ${DB_HOST:-db}
-      DB_PORT: ${DB_PORT:-5432}
-      DB_USER: ${DB_USER:-odoo}
-      DB_NAME: ${DB_NAME:-odoo-demo}
-      DB_SSLMODE: ${DB_SSLMODE:-prefer}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_NAME: ${DB_NAME}
+      DB_SSLMODE: ${DB_SSLMODE}
     secrets:
       - postgresql_password
     command: >
       sh -lc '
+        : "${DB_HOST:?Missing DB_HOST}";
+        : "${DB_USER:?Missing DB_USER}";
+        : "${DB_NAME:?Missing DB_NAME}";
+        : "${DB_PORT:?Missing DB_PORT}";
+        test -f /run/secrets/postgresql_password || { echo "Missing secret /run/secrets/postgresql_password (create odoo_pg_pass on the host)"; exit 1; };
         exec odoo \
           -d "$DB_NAME" \
           --db_host="$DB_HOST" \
