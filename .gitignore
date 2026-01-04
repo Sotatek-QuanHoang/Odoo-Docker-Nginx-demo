@@ -78,6 +78,10 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# Local secrets / environment
+.env
+odoo_pg_pass
+
 # IPython
 profile_default/
 ipython_config.py
@@ -143,6 +147,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+tmp/
 
 # Spyder project settings
 .spyderproject

@@ -24,7 +24,7 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
 
   db:
-    image: postgres:15
+    image: postgres:18
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD_FILE=/run/secrets/postgresql_password
