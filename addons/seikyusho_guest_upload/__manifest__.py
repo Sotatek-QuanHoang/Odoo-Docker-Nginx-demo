@@ -11,6 +11,6 @@
         "views/seikyusho_upload_views.xml",
         "views/seikyusho_upload_templates.xml",
     ],
-    "application": False,
+    "application": True,
     "installable": True,
 }
